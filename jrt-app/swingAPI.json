@@ -1,0 +1,2028 @@
+{
+    "swingapi": "3.1.0",
+    "info": {
+        "title": "Jackrabbit X-Chain Swap",
+        "version": "1.0",
+        "description": "Jackrabbit uses the Swing API to bridge tokens from Ethereum to Moonbeam via the Axelar Network.",
+        "termsOfService": "https://swing.xyz/terms",
+        "contact": {
+            "email": "support@swing.xyz",
+            "name": "Support"
+        }
+    },
+    "servers": [
+        {
+            "url": "https://swap.prod.swing.xyz",
+            "description": "Production"
+        },
+        {
+            "url": "https://swap.dev.swing.xyz",
+            "description": "Staging"
+        },
+        {
+            "url": "http://localhost:3000",
+            "description": "local"
+        }
+    ],
+    "paths": {
+        "/v0/transfer/quote": {
+            "get": {
+                "summary": "Get Quote",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "fromToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC",
+                                                "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                                            },
+                                            "toToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC",
+                                                "address": "0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b"
+                                            },
+                                            "fromChain": {
+                                                "chainId": 1,
+                                                "slug": "ethereum",
+                                                "name": "Ethereum"
+                                            },
+                                            "toChain": {
+                                                "chainId": 1284,
+                                                "slug": "moonbeam",
+                                                "name": "Moonbeam"
+                                            },
+                                            "routes": [
+                                                {
+                                                    "bridgeTokenAddress": "0x00.....",
+                                                    "name": "USDC",
+                                                    "part": 100
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "fromToken": {
+                                            "$ref": "#/components/schemas/Token"
+                                        },
+                                        "toToken": {
+                                            "$ref": "#/components/schemas/Token"
+                                        },
+                                        "fromChain": {
+                                            "$ref": "#/components/schemas/Chain"
+                                        },
+                                        "toChain": {
+                                            "$ref": "#/components/schemas/Chain"
+                                        },
+                                        "routes": {
+                                            "type": "array",
+                                            "uniqueItems": true,
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "duration": {
+                                                        "type": "string",
+                                                        "example": "low"
+                                                    },
+                                                    "gas": {
+                                                        "type": "string",
+                                                        "example": "4000000000",
+                                                        "description": "Gas limit for the deposit"
+                                                    },
+                                                    "route": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "$ref": "#/components/schemas/Route"
+                                                        }
+                                                    },
+                                                    "quote": {
+                                                        "type": "object",
+                                                        "required": [
+                                                            "destinationTxFee",
+                                                            "bridgeFee",
+                                                            "amount",
+                                                            "decimals"
+                                                        ],
+                                                        "properties": {
+                                                            "destinationTxFee": {
+                                                                "type": "string"
+                                                            },
+                                                            "bridgeFee": {
+                                                                "type": "string"
+                                                            },
+                                                            "amount": {
+                                                                "type": "string"
+                                                            },
+                                                            "decimals": {
+                                                                "type": "number"
+                                                            }
+                                                        }
+                                                    },
+                                                    "bridgeFeeInNativeToken": {
+                                                        "type": "string"
+                                                    },
+                                                    "maxSlippage": {
+                                                        "type": "number",
+                                                        "description": "Axelar Network swap. "
+                                                    }
+                                                },
+                                                "required": [
+                                                    "duration",
+                                                    "gas",
+                                                    "route",
+                                                    "quote"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "fromToken",
+                                        "toToken",
+                                        "fromChain",
+                                        "toChain",
+                                        "routes"
+                                    ]
+                                },
+                                "examples": {
+                                    "Ethereum to Moonbeam": {
+                                        "value": {
+                                            "fromToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC",
+                                                "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+                                            },
+                                            "toToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC",
+                                                "address": "0x818ec0A7Fe18Ff94269904fCED6AE3DaE6d6dC0b"
+                                            },
+                                            "fromChain": {
+                                                "chainId": 1,
+                                                "slug": "ethereum",
+                                                "name": "Ethereum"
+                                            },
+                                            "toChain": {
+                                                "chainId": 1284,
+                                                "slug": "moonbeam",
+                                                "name": "Moonbeam"
+                                            },
+                                            "routes": [
+                                                {
+                                                    "destinationTxFee": "4000",
+                                                    "bridgeFee": "3000",
+                                                    "duration": "low",
+                                                    "gas": "4000000000",
+                                                    "quote": "10000000",
+                                                    "route": [
+                                                        {
+                                                            "bridge": "celer",
+                                                            "bridgeTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                                                            "name": "USDC",
+                                                            "part": 100
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "destinationTxFee": "4000",
+                                                    "bridgeFee": "3000",
+                                                    "duration": "low",
+                                                    "gas": "4000000000",
+                                                    "quote": "10000000",
+                                                    "route": [
+                                                        {
+                                                            "bridge": "hop",
+                                                            "bridgeTokenAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                                                            "name": "USDC",
+                                                            "part": 100
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "destinationTxFee": "5000",
+                                                    "bridgeFee": "3400",
+                                                    "duration": "low",
+                                                    "gas": "90000000000",
+                                                    "quote": "10000000",
+                                                    "route": [
+                                                        {
+                                                            "bridge": "axelar",
+                                                            "bridgeTokenAddress": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+                                                            "name": "USDC",
+                                                            "part": 60
+                                                        },
+                                                        {
+                                                            "bridge": "hop",
+                                                            "bridgeTokenAddress": "",
+                                                            "name": "USDC",
+                                                            "part": 40
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getQuote",
+                "description": "Compare quote from different bridges and find the best price.",
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/TokenSymbol"
+                        },
+                        "in": "query",
+                        "name": "tokenSymbol",
+                        "required": true,
+                        "description": "Token symbol on the source chain. "
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/TokenSymbol"
+                        },
+                        "in": "query",
+                        "name": "toTokenSymbol",
+                        "description": "Token symbol on the destination chain. "
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "1000000"
+                        },
+                        "in": "query",
+                        "name": "tokenAmount",
+                        "required": true,
+                        "description": "Token amount in minimal divisible unit (Wei)"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                        },
+                        "in": "query",
+                        "name": "fromTokenAddress",
+                        "required": true,
+                        "description": "Token address on source chain. "
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "fromChain",
+                        "required": true,
+                        "description": "Source chain slug"
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "fromChainId",
+                        "required": true,
+                        "description": "Source Chain Id. For non-EVM chain like Solana or Terra, put 0."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "toChain",
+                        "required": true,
+                        "description": "Destination chain slug."
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "toChainId",
+                        "required": true,
+                        "description": "Destination Chain Id. In case of non-EVM chain like Solana or Terra, put 0"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                        },
+                        "in": "query",
+                        "name": "fromUserAddress",
+                        "required": true,
+                        "description": "User's wallet address from source chain."
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": 1000
+                        },
+                        "in": "query",
+                        "name": "slippageTolerance",
+                        "description": "SlippageTolerance is used by Celer Bridge and it is optional. If not present, we will use default one based on chain and token."
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "toUserAddress",
+                        "description": "User's wallet address on the destination chain. This is only required on transfers between EVM and non-EVM chains, e.g. wormhole"
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "toTokenAddress",
+                        "description": "Token address on the destination chain. This is only required in case of transfer between EVM and non-EVM chains, e.g. wormhole"
+                    }
+                ]
+            },
+            "parameters": []
+        },
+        "/v0/transfer/allowance": {
+            "get": {
+                "summary": "Get Allowance",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "allowance": "1000000"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "allowance": {
+                                            "type": "string",
+                                            "example": "1000000"
+                                        }
+                                    },
+                                    "required": [
+                                        "allowance"
+                                    ]
+                                },
+                                "examples": {
+                                    "Example": {
+                                        "value": {
+                                            "allowance": "1000000"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getAllowance",
+                "description": "Return allowance of a given bridge contract with specific token on source chain",
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/TokenSymbol"
+                        },
+                        "in": "query",
+                        "name": "tokenSymbol",
+                        "required": true,
+                        "description": "Token symbol on the source chain. "
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "tokenAddress",
+                        "required": true,
+                        "description": "Token address on source chain. "
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "fromChain",
+                        "required": true,
+                        "description": "Source chain slug"
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "fromChainId",
+                        "required": true,
+                        "description": "Source Chain Id. For non-EVM chain like Solana or Terra, put 0."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "toChain",
+                        "required": false,
+                        "description": "Dest chain slug. Only required for token swap in Nxtp bridge"
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "toChainId",
+                        "required": false,
+                        "description": "Dest Chain Id. Only required for token swap in Nxtp bridge"
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "fromAddress",
+                        "required": true,
+                        "description": "User's wallet address from source chain."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/Bridge"
+                        },
+                        "in": "query",
+                        "name": "bridge",
+                        "required": true,
+                        "description": "Bridge slug"
+                    }
+                ]
+            }
+        },
+        "/v0/transfer/approve": {
+            "get": {
+                "summary": "Approve Bridge",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "data": "0x095ea7b30000000000000000000000001111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e800",
+                                            "to": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                                            "value": "10000000",
+                                            "fromChain": {
+                                                "chainId": 1,
+                                                "slug": "ethereum",
+                                                "name": "Ethereum"
+                                            }
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "data": {
+                                            "type": "string",
+                                            "example": "0x095ea7b3...1111111254fb6c44bac0bed2854e76f90643097d...174876e800"
+                                        },
+                                        "to": {
+                                            "type": "string",
+                                            "example": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48"
+                                        },
+                                        "value": {
+                                            "type": "string",
+                                            "example": "10000000"
+                                        },
+                                        "gas": {
+                                            "type": "string",
+                                            "example": "10000000"
+                                        },
+                                        "fromChain": {
+                                            "$ref": "#/components/schemas/Chain"
+                                        },
+                                        "from": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "data",
+                                        "to",
+                                        "fromChain",
+                                        "from"
+                                    ]
+                                },
+                                "examples": {
+                                    "Eth": {
+                                        "value": {
+                                            "data": "0x095ea7b30000000000000000000000001111111254fb6c44bac0bed2854e76f90643097d000000000000000000000000000000000000000000000000000000174876e800",
+                                            "to": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+                                            "value": "10000000",
+                                            "fromChain": {
+                                                "chainId": 1,
+                                                "slug": "ethereum",
+                                                "name": "Ethereum"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getApproval",
+                "description": "Approve Bridge contract for a specific token on source chain",
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/TokenSymbol"
+                        },
+                        "in": "query",
+                        "name": "tokenSymbol",
+                        "required": true,
+                        "description": "Token symbol on the source chain. "
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "tokenAddress",
+                        "required": true,
+                        "description": "Token address on source chain. "
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "tokenAmount",
+                        "required": true,
+                        "description": "Token amount in minimal divisible unit (Wei)"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "fromChain",
+                        "required": true,
+                        "description": "Source chain slug"
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "fromChainId",
+                        "required": true,
+                        "description": "Source Chain Id. For non-EVM chain like Solana or Terra, put 0."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "toChain",
+                        "required": true,
+                        "description": "Dest chain slug. Only required in Across bridge. Optional in Nxtp bridge"
+                    },
+                    {
+                        "schema": {
+                            "type": "number"
+                        },
+                        "in": "query",
+                        "name": "toChainId",
+                        "required": true,
+                        "description": "Dest Chain Id. Only required in Across bridge. Optional in Nxtp bridge"
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "fromAddress",
+                        "required": true,
+                        "description": "User's wallet address from source chain."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/Bridge"
+                        },
+                        "in": "query",
+                        "name": "bridge",
+                        "required": true,
+                        "description": "Bridge slug"
+                    }
+                ]
+            }
+        },
+        "/v0/transfer/send": {
+            "post": {
+                "summary": "Send Crosschain Swap or Transfer",
+                "operationId": "v0.transfer.transferToken",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "fromToken": {
+                                            "$ref": "#/components/schemas/Token"
+                                        },
+                                        "toToken": {
+                                            "$ref": "#/components/schemas/Token"
+                                        },
+                                        "fromChain": {
+                                            "$ref": "#/components/schemas/Chain"
+                                        },
+                                        "toChain": {
+                                            "$ref": "#/components/schemas/Chain"
+                                        },
+                                        "route": {
+                                            "type": "array",
+                                            "description": "Best route returned by Swing ",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Route"
+                                            }
+                                        },
+                                        "tx": {
+                                            "$ref": "#/components/schemas/TransferTx"
+                                        }
+                                    },
+                                    "required": [
+                                        "fromToken",
+                                        "toToken",
+                                        "fromChain",
+                                        "toChain",
+                                        "route"
+                                    ]
+                                },
+                                "examples": {
+                                    "Response for NXTP": {
+                                        "value": {
+                                            "tx": {
+                                                "data": "0x797f75da0000000000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000008400000000000000000000000000000000000000000000000000000000000000fc000000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b7500000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b75000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000002a00000000000000000000000006090de2ec76eb1dc3b5d632734415c93c44fd113000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000031769170acae5f8c06a4577e7ff8719d742fd4c50000000000000000000000002a6ee6da9147e412884d8260bc741d816d481c0a00000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b750000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a000000000000000000000000546154541ef224a103940fae4551f71227f8224400000000000000000000000000000000000000000000000000000000000000fa00000000000000000000000000000000000000000000000000000000000000898fba3e6507cdae9dfbd978fb035d927e77019a142fda59571cf45e1d413ba62558f970dfa12a052e821a03de33fecebf1df002c7fde42547a6be95a35ded367600000000000000000000000000000000000000000000000000000000626d3629000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c412e4a6d90000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000008f6ec000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000031769170acae5f8c06a4577e7ff8719d742fd4c5000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000fa00000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b75000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000000000890000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000009607c0000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a58f970dfa12a052e821a03de33fecebf1df002c7fde42547a6be95a35ded367600000000000000000000000000000000000000000000000000000000626d36298fba3e6507cdae9dfbd978fb035d927e77019a142fda59571cf45e1d413ba625000000000000000000000000546154541ef224a103940fae4551f71227f8224400000000000000000000000000000000000000000000000000000000000002400000000000000000000000000d29d9fa94a23e0d2f06efc79c25144a8f51fc4b0000000000000000000000006090de2ec76eb1dc3b5d632734415c93c44fd11300000000000000000000000000000000000000000000000000000000626918aa00000000000000000000000000000000000000000000000000000000000004c412e4a6d90000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000008f6ec000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041a415f6f0c8311961a458dd94817d3567ab2dd7b74a83cfc5ce99910e3be79fc75e912c98e3e6499ca19beca1f0dc664e6ca42ad3c556dd4e78a68877f5c5ff841c00000000000000000000000000000000000000000000000000000000000000",
+                                                "to": "0x2a6Ee6DA9147E412884d8260BC741d816D481C0a",
+                                                "from": "0xEC0c6441cAc4EBC8d9CD12dF6FFB19829e9c427A",
+                                                "txId": "0x58f970dfa12a052e821a03de33fecebf1df002c7fde42547a6be95a35ded3676",
+                                                "encryptedCallData": "0x00000000000000000000000000000000000000000000000000000000080000000000000000000000000000000000000000000000000000000000000034000000000000000000000000000000000000000000000000000000000000008400000000000000000000000000000000000000000000000000000000000000fc000000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b7500000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b75000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000002a00000000000000000000000006090de2ec76eb1dc3b5d632734415c93c44fd113000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000031769170acae5f8c06a4577e7ff8719d742fd4c50000000000000000000000002a6ee6da9147e412884d8260bc741d816d481c0a00000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b750000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa84174000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a000000000000000000000000546154541ef224a103940fae4551f71227f8224400000000000000000000000000000000000000000000000000000000000000fa00000000000000000000000000000000000000000000000000000000000000898fba3e6507cdae9dfbd978fb035d927e77019a142fda59571cf45e1d413ba62558f970dfa12a052e821a03de33fecebf1df002c7fde42547a6be95a35ded367600000000000000000000000000000000000000000000000000000000626d3629000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004c412e4a6d90000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000008f6ec000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000001e0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007600000000000000000000000000000000000000000000000000000000000000020000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000031769170acae5f8c06a4577e7ff8719d742fd4c5000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000fa00000000000000000000000004068da6c83afcfa0e13ba15a6696662335d5b75000000000000000000000000000000000000000000000000000000000098968000000000000000000000000000000000000000000000000000000000000000890000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000009607c0000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a58f970dfa12a052e821a03de33fecebf1df002c7fde42547a6be95a35ded367600000000000000000000000000000000000000000000000000000000626d36298fba3e6507cdae9dfbd978fb035d927e77019a142fda59571cf45e1d413ba625000000000000000000000000546154541ef224a103940fae4551f71227f8224400000000000000000000000000000000000000000000000000000000000002400000000000000000000000000d29d9fa94a23e0d2f06efc79c25144a8f51fc4b0000000000000000000000006090de2ec76eb1dc3b5d632734415c93c44fd11300000000000000000000000000000000000000000000000000000000626918aa00000000000000000000000000000000000000000000000000000000000004c412e4a6d90000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa841740000000000000000000000002791bca1f2de4661ed88a30c99a7a9449aa8417400000000000000000000000000000000000000000000000000000000008f6ec000000000000000000000000000000000000000000000000000000000008f6ec00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000ec0c6441cac4ebc8d9cd12df6ffb19829e9c427a00000000000000000000000000000000000000000000000000000000000000e0000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000041a415f6f0c8311961a458dd94817d3567ab2dd7b74a83cfc5ce99910e3be79fc75e912c98e3e6499ca19beca1f0dc664e6ca42ad3c556dd4e78a68877f5c5ff841c00000000000000000000000000000000000000000000000000000000000000"
+                                            },
+                                            "fromToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC",
+                                                "address": "0xEC0c6441cAc4EBC8d9CD12dF6FFB19829e9c427A"
+                                            },
+                                            "fromChain": {
+                                                "chainId": 250,
+                                                "name": "Fantom",
+                                                "slug": "fantom"
+                                            },
+                                            "toToken": {
+                                                "symbol": "USDC",
+                                                "name": "USDC"
+                                            },
+                                            "toChain": {
+                                                "chainId": 137,
+                                                "name": "Polygon",
+                                                "slug": "polygon"
+                                            },
+                                            "route": [
+                                                {
+                                                    "bridge": "nxtp",
+                                                    "bridgeTokenAddress": "",
+                                                    "name": "USDC",
+                                                    "part": 100
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Send transfer request to bridge contract based on the route computed by getQuote api",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "tokenSymbol": {
+                                        "$ref": "#/components/schemas/TokenSymbol"
+                                    },
+                                    "toTokenSymbol": {
+                                        "$ref": "#/components/schemas/TokenSymbol"
+                                    },
+                                    "tokenAmount": {
+                                        "type": "string",
+                                        "description": "Amount in minimal divisible unit (wei)"
+                                    },
+                                    "fromChain": {
+                                        "$ref": "#/components/schemas/ChainSlug"
+                                    },
+                                    "fromChainId": {
+                                        "type": "number",
+                                        "description": "Source chain Id"
+                                    },
+                                    "fromTokenAddress": {
+                                        "type": "string",
+                                        "description": "Token address on source chain"
+                                    },
+                                    "fromUserAddress": {
+                                        "type": "string",
+                                        "description": "User's wallet on source chain. we will use the same wallet address for EVM transfers. For non-EVM transfer, please enter toUserAddress"
+                                    },
+                                    "toChain": {
+                                        "$ref": "#/components/schemas/ChainSlug"
+                                    },
+                                    "toChainId": {
+                                        "type": "number",
+                                        "description": "Chain id of destination chain"
+                                    },
+                                    "route": {
+                                        "type": "array",
+                                        "description": "Best route returned by Swing /quote endpoint",
+                                        "items": {
+                                            "$ref": "#/components/schemas/Route"
+                                        }
+                                    },
+                                    "toTokenAddress": {
+                                        "type": "string",
+                                        "description": "Token address on the destination chain. This is only required in case of transfer between EVM and non-EVM chains. "
+                                    },
+                                    "toUserAddress": {
+                                        "type": "string",
+                                        "description": "User's wallet address on the destination chain."
+                                    },
+                                    "fromTokenAccountAddress": {
+                                        "type": "string",
+                                        "description": "Solana specific token account address (required if transfer is from Solana to EVM chains)"
+                                    },
+                                    "toTokenAccountAddress": {
+                                        "type": "string",
+                                        "description": "Solana specific token account address (required if transfer is from EVM chains to Solana)"
+                                    },
+                                    "slippageTolerance": {
+                                        "type": "number",
+                                        "description": "SlippageTolerance is used by Celer Bridge and it is optional. If not present, we will use default one based on chain and token."
+                                    },
+                                    "maxSlippage": {
+                                        "type": "number",
+                                        "description": "Optional value returned by the getQuote endpoint for celer bridge. "
+                                    },
+                                    "encryptionPublicKey": {
+                                        "type": "string",
+                                        "description": "Nxtp requires encryptionPublicKey to encrypt callData."
+                                    }
+                                },
+                                "required": [
+                                    "tokenSymbol",
+                                    "tokenAmount",
+                                    "fromChain",
+                                    "fromChainId",
+                                    "fromTokenAddress",
+                                    "fromUserAddress",
+                                    "toChain",
+                                    "toChainId",
+                                    "route"
+                                ]
+                            },
+                            "examples": {
+                                "NXTP (fantom to Polygon)": {
+                                    "value": {
+                                        "tokenSymbol": "USDC",
+                                        "toTokenSymbol": "MATIC",
+                                        "fromTokenAddress": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+                                        "tokenAmount": "10000000",
+                                        "fromUserAddress": "0xEC0c6441cAc4EBC8d9CD12dF6FFB19829e9c427A",
+                                        "fromChain": "fantom",
+                                        "fromChainId": 250,
+                                        "toChain": "polygon",
+                                        "toChainId": 137,
+                                        "route": [
+                                            {
+                                                "bridge": "nxtp",
+                                                "bridgeTokenAddress": "",
+                                                "name": "USDC",
+                                                "part": 100
+                                            }
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v0/transfer/status": {
+            "get": {
+                "summary": "Crosschain Swap or Transfer Status",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "status": "Submitted/Prepared/Refund",
+                                            "needClaim": false,
+                                            "refundReason": "BAD_LIQUIDITY/BAD_SLIPPAGE/BAD_XFER_DISABLED/BAD_DEST_CHAIN..."
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "bridge": {
+                                            "$ref": "#/components/schemas/Bridge"
+                                        },
+                                        "txId": {
+                                            "type": "string",
+                                            "description": "Internal unique identifier used by underlying bridge. Not guaranteed to be the transaction hash. For celer this is the transferId. "
+                                        },
+                                        "status": {
+                                            "$ref": "#/components/schemas/TransferStatus"
+                                        },
+                                        "needClaim": {
+                                            "type": "boolean",
+                                            "description": "If true, need to call /claim endpoint to claim token on the destination chain for this specific transaction. "
+                                        },
+                                        "refundReason": {
+                                            "type": "string",
+                                            "example": "BAD_LIQUIDITY",
+                                            "description": "only shows if status is in refund state"
+                                        },
+                                        "txStartedTimestamp": {
+                                            "type": "number",
+                                            "description": "Unix timestamp of when the Transaction was first initiated"
+                                        },
+                                        "fromTokenAddress": {
+                                            "type": "string",
+                                            "description": "Token Address of sending token on the source chain"
+                                        },
+                                        "fromChainId": {
+                                            "type": "number",
+                                            "description": "Chain ID of the source chain"
+                                        },
+                                        "fromChainSlug": {
+                                            "$ref": "#/components/schemas/ChainSlug"
+                                        },
+                                        "fromAmount": {
+                                            "type": "string",
+                                            "description": "Initial token amount sent from the source chain"
+                                        },
+                                        "toTokenAddress": {
+                                            "type": "string",
+                                            "description": "Token Address of receiving token on the destination chain"
+                                        },
+                                        "toChainId": {
+                                            "type": "number",
+                                            "description": "Chain ID of the destination chain"
+                                        },
+                                        "toChainSlug": {
+                                            "$ref": "#/components/schemas/ChainSlug"
+                                        },
+                                        "toAmount": {
+                                            "type": "string",
+                                            "description": "Final token amount deposited into the destination chain"
+                                        },
+                                        "fromChainTxHash": {
+                                            "type": "string",
+                                            "description": "The transaction hash returned from the source chain"
+                                        },
+                                        "toChainTxHash": {
+                                            "type": "string",
+                                            "description": "The transaction hash on the destination chain"
+                                        }
+                                    },
+                                    "required": [
+                                        "status",
+                                        "needClaim",
+                                        "refundReason"
+                                    ]
+                                },
+                                "examples": {
+                                    "Refund": {
+                                        "value": {
+                                            "status": "Refund",
+                                            "needClaim": false,
+                                            "refundReason": "BAD_LIQUIDITY"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getStatus",
+                "description": "Check the transfer status for a given bridge",
+                "parameters": [
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "fromChain",
+                        "description": "Source chain slug. Optional search filter"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": "1"
+                        },
+                        "in": "query",
+                        "name": "fromChainId",
+                        "description": "Source Chain Id. Optional search filter. For non-EVM chain like Solana or Terra, put 0."
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/ChainSlug"
+                        },
+                        "in": "query",
+                        "name": "toChain",
+                        "description": "Destination chain slug. Optional search filter"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": "137"
+                        },
+                        "in": "query",
+                        "name": "toChainId",
+                        "description": "Destination Chain Id. Optional search filter. In case of non-EVM chain like Solana or Terra, put 0"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/Bridge"
+                        },
+                        "in": "query",
+                        "name": "bridge",
+                        "description": "Bridge slug. Optional bridge filter"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0x0000....000"
+                        },
+                        "in": "query",
+                        "name": "txId",
+                        "description": "Bridge-specific transaction identifier. For NXTP this is the transaction id from bid. For celer this is the transferId. "
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0x0000....000"
+                        },
+                        "in": "query",
+                        "name": "userAddress",
+                        "required": false,
+                        "description": "user's wallet address on source chain"
+                    },
+                    {
+                        "schema": {
+                            "type": "string"
+                        },
+                        "in": "query",
+                        "name": "txHash",
+                        "description": "Transaction Hash returned by signer (e.g. metamask) on source chain.",
+                        "required": true
+                    }
+                ]
+            },
+            "parameters": []
+        },
+        "/v0/transfer/history": {
+            "get": {
+                "summary": "Crosschain Swap or Transfer History",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "transactions": {
+                                            "type": "array",
+                                            "uniqueItems": true,
+                                            "items": {
+                                                "type": "object",
+                                                "description": "",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "bridge": {
+                                                        "$ref": "#/components/schemas/Bridge"
+                                                    },
+                                                    "txId": {
+                                                        "type": "string",
+                                                        "description": "Internal unique identifier used by underlying bridge. Not guaranteed to be the transaction hash. For celer this is the transferId. "
+                                                    },
+                                                    "status": {
+                                                        "$ref": "#/components/schemas/TransferStatus"
+                                                    },
+                                                    "needClaim": {
+                                                        "type": "boolean",
+                                                        "description": "If true, need to call /claim endpoint to claim token on the destination chain for this specific transaction. "
+                                                    },
+                                                    "refundReason": {
+                                                        "type": "string",
+                                                        "example": "BAD_LIQUIDITY",
+                                                        "description": "only shows if status is in refund state"
+                                                    },
+                                                    "txStartedTimestamp": {
+                                                        "type": "number",
+                                                        "description": "Unix timestamp of when the Transaction was first initiated"
+                                                    },
+                                                    "fromTokenAddress": {
+                                                        "type": "string",
+                                                        "description": "Token Address of sending token on the source chain"
+                                                    },
+                                                    "fromChainId": {
+                                                        "type": "number",
+                                                        "description": "Chain ID of the source chain"
+                                                    },
+                                                    "fromChainSlug": {
+                                                        "$ref": "#/components/schemas/ChainSlug"
+                                                    },
+                                                    "fromAmount": {
+                                                        "type": "string",
+                                                        "description": "Initial token amount sent from the source chain"
+                                                    },
+                                                    "toTokenAddress": {
+                                                        "type": "string",
+                                                        "description": "Token Address of receiving token on the destination chain"
+                                                    },
+                                                    "toChainId": {
+                                                        "type": "number",
+                                                        "description": "Chain ID of the destination chain"
+                                                    },
+                                                    "toChainSlug": {
+                                                        "$ref": "#/components/schemas/ChainSlug"
+                                                    },
+                                                    "toAmount": {
+                                                        "type": "string",
+                                                        "description": "Final token amount deposited into the destination chain"
+                                                    },
+                                                    "fromChainTxHash": {
+                                                        "type": "string",
+                                                        "description": "The transaction hash returned from the source chain"
+                                                    },
+                                                    "toChainTxHash": {
+                                                        "type": "string",
+                                                        "description": "The transaction hash on the destination chain"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                },
+                                "examples": {
+                                    "Refund": [
+                                        {
+                                            "value": {
+                                                "bridge": "nxtp",
+                                                "txBridgeId": "0x0000....000",
+                                                "status": "Refund",
+                                                "needClaim": false,
+                                                "refundReason": "BAD_LIQUIDITY",
+                                                "txStartedTimestamp": 1233456788987,
+                                                "fromTokenAddress": "0x....",
+                                                "fromChainId": 56,
+                                                "fromChainSlug": "bsc",
+                                                "fromAmount": "1234",
+                                                "toChainId": 137,
+                                                "toChainSlug": "polygon",
+                                                "toTokenAddress": "0x....",
+                                                "toAmount": "5678"
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getHistory",
+                "description": "get the history for a given bridge",
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": "1"
+                        },
+                        "in": "query",
+                        "name": "fromChainId",
+                        "description": "Source Chain Id. Optional search filter. For non-EVM chain like Solana or Terra, put 0"
+                    },
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": "137"
+                        },
+                        "in": "query",
+                        "name": "toChainId",
+                        "description": "Destination Chain Id. Optional search filter. In case of non-EVM chain like Solana or Terra, put 0"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0x0000....000"
+                        },
+                        "in": "query",
+                        "name": "userAddress",
+                        "required": true,
+                        "description": "user's wallet address on source chain"
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "0x0000....000"
+                        },
+                        "in": "query",
+                        "name": "txId",
+                        "description": "Transaction hash in most cases. For celer this is the transferId. "
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/Bridge"
+                        },
+                        "in": "query",
+                        "name": "bridge",
+                        "description": "Bridge slug. Optional search filter."
+                    }
+                ]
+            },
+            "parameters": []
+        },
+        "/v0/transfer/sign": {
+            "post": {
+                "summary": "Sign",
+                "operationId": "v0.transfer.sign",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "description": "",
+                                    "x-examples": {
+                                        "example-1": {
+                                            "hash": "0x2657fff6d3aaa4caf12960ddc810d2cf5c00e725aae84a5ac34fbead7e1b4671"
+                                        }
+                                    },
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "hash": {
+                                            "type": "string",
+                                            "description": "hash of the signature that will be the input of the claim function for NXTP"
+                                        },
+                                        "relayerFee": {
+                                            "type": "string",
+                                            "description": "relayer fee of the signature that will be the input of the claim function for NXTP"
+                                        },
+                                        "useNativeTokenToClaim": {
+                                            "type": "boolean",
+                                            "description": "This will be used in '/claim' endpoint"
+                                        }
+                                    },
+                                    "required": [
+                                        "hash"
+                                    ]
+                                },
+                                "examples": {
+                                    "hash": {
+                                        "value": {
+                                            "hash": "0x2657fff6d3aaa4caf12960ddc810d2cf5c00e725aae84a5ac34fbead7e1b4671",
+                                            "relayerFee": "300000",
+                                            "useNativeTokenToClaim": false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "bridge": {
+                                        "$ref": "#/components/schemas/Bridge"
+                                    },
+                                    "txId": {
+                                        "type": "string",
+                                        "example": "0x00000....000",
+                                        "description": "Transaction hash"
+                                    },
+                                    "userAddress": {
+                                        "type": "string",
+                                        "description": "User's wallet address"
+                                    },
+                                    "useNativeTokenToClaim": {
+                                        "type": "boolean",
+                                        "description": "Only required if bridge is nxtp cross swap. Default false which will use relayer fee"
+                                    }
+                                },
+                                "required": [
+                                    "bridge",
+                                    "txId",
+                                    "userAddress"
+                                ]
+                            },
+                            "examples": {
+                                "nxtp": {
+                                    "value": {
+                                        "bridge": "nxtp",
+                                        "txId": "0x086f3573e57e2011bd39d7fe27f3ea183f2c7d2ff31f9b5f12280d6a7a6ee4f6",
+                                        "userAddress": "0xc9f200abB8a628af2ad821755F0119dAed0F5513"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "[NXTP Only] Genereate signature which is required in the NXTP claim request. "
+            }
+        },
+        "/v0/transfer/claim": {
+            "post": {
+                "summary": "Claim Crosschain Swap or Transfer",
+                "operationId": "v0.transfer.claim",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "tx": {
+                                            "$ref": "#/components/schemas/TransferTx"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "fromChain": {
+                                        "$ref": "#/components/schemas/Chain"
+                                    },
+                                    "toChain": {
+                                        "$ref": "#/components/schemas/Chain"
+                                    },
+                                    "bridge": {
+                                        "$ref": "#/components/schemas/Bridge"
+                                    },
+                                    "txId": {
+                                        "type": "string",
+                                        "example": "0x00000....000",
+                                        "description": "Transaction hash genereated by send request"
+                                    },
+                                    "userAddress": {
+                                        "type": "string",
+                                        "description": "user's wallet address on destination chain"
+                                    },
+                                    "signature": {
+                                        "type": "string",
+                                        "description": "Only required if bridge is nxtp"
+                                    },
+                                    "relayerFee": {
+                                        "type": "string",
+                                        "description": "Only required if bridge is nxtp cross swap"
+                                    },
+                                    "useNativeTokenToClaim": {
+                                        "type": "boolean",
+                                        "description": "Only required if bridge is nxtp cross swap. Default false which will use relayer fee"
+                                    },
+                                    "toUserAddress": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "fromChain",
+                                    "toChain",
+                                    "bridge",
+                                    "txId",
+                                    "userAddress"
+                                ]
+                            },
+                            "examples": {
+                                "nxtp": {
+                                    "value": {
+                                        "fromChain": {
+                                            "chainId": "250",
+                                            "slug": "fantom"
+                                        },
+                                        "toChain": {
+                                            "chainId": "1285",
+                                            "slug": "moonriver"
+                                        },
+                                        "bridge": "nxtp",
+                                        "txId": "0x47a83956ba8b7c6d99b1a4bf8c90177c8efbe5e51129c01961a6fc5f6956ef05",
+                                        "userAddress": "0x54BEec0EB7F2192CA4BEB4649eEbde71dCb8eB36",
+                                        "signature": "0xd1745195f41168ca0984f97b1bc5fb6638616f1b2445bfee505a620478bdcab14d1f5599c478a92f663d2543de8efd717b0d4c766411b6f7377dad2050d49b411b"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": ""
+            }
+        },
+        "/v0/transfer/config": {
+            "get": {
+                "summary": "Get Config",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "chains": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Chain"
+                                            }
+                                        },
+                                        "tokens": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "symbol": {
+                                                        "type": "string",
+                                                        "example": "USDT"
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Tether USD"
+                                                    },
+                                                    "logoURI": {
+                                                        "type": "string",
+                                                        "example": "https://static.debank.com/image/matic_token/logo_url/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/549c4205dbb199f1b8b03af783f35e71.png"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "bridges": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Anyswap"
+                                                    },
+                                                    "slug": {
+                                                        "type": "string",
+                                                        "example": "anyswap"
+                                                    },
+                                                    "bridgeAddress": {
+                                                        "type": "string",
+                                                        "example": "0x..."
+                                                    },
+                                                    "steps": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string",
+                                                            "example": "allowance"
+                                                        }
+                                                    },
+                                                    "getStatusOnChain": {
+                                                        "type": "boolean",
+                                                        "example": false
+                                                    },
+                                                    "logo": {
+                                                        "type": "string",
+                                                        "example": "https://raw.githubusercontent.com/polkaswitch/bridges-metadata/main/logos/hyphen.png"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "chains",
+                                        "tokens",
+                                        "bridges"
+                                    ]
+                                },
+                                "examples": {
+                                    "Example": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.transfer.getConfig",
+                "description": "Get the transfer config",
+                "parameters": [
+                    {
+                        "schema": {
+                            "type": "number",
+                            "example": "1"
+                        },
+                        "in": "query",
+                        "name": "chainId",
+                        "description": "Chain Id. Optional search filter. For non-EVM chain like Solana or Terra, put 0."
+                    },
+                    {
+                        "schema": {
+                            "type": "string",
+                            "example": "ethereum"
+                        },
+                        "in": "query",
+                        "name": "chain",
+                        "description": "Chain slug. Optional search filter"
+                    },
+                    {
+                        "schema": {
+                            "$ref": "#/components/schemas/Bridge"
+                        },
+                        "in": "query",
+                        "name": "bridge",
+                        "description": "Bridge slug. Optional search filter"
+                    }
+                ]
+            }
+        },
+        "/v0/transfer/notify": {
+            "post": {
+                "summary": "Notify",
+                "operationId": "v0.transfer.notify",
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                },
+                "description": "Notify API about the txHash and other relavant data upon sending transaction onchain.",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "fromChainTxHash": {
+                                        "type": "string",
+                                        "description": "TxHash returned by JsonRPC signer on the source chain."
+                                    },
+                                    "txId": {
+                                        "type": "string",
+                                        "description": "Bridge specific transaction id. For example, NXTP is router transaction id and Celer is transfer id."
+                                    },
+                                    "toToken": {
+                                        "$ref": "#/components/schemas/Token"
+                                    },
+                                    "fromToken": {
+                                        "$ref": "#/components/schemas/Token"
+                                    },
+                                    "fromChain": {
+                                        "$ref": "#/components/schemas/Chain"
+                                    },
+                                    "fromUserAddress": {
+                                        "type": "string",
+                                        "description": "User's wallet on source chain."
+                                    },
+                                    "toUserAddress": {
+                                        "type": "string",
+                                        "description": "User's wallet address on the destination chain. Only applicaple if toUserAddress is different (in case of non-EVM chain transfer)."
+                                    },
+                                    "toChain": {
+                                        "$ref": "#/components/schemas/Chain"
+                                    },
+                                    "bridge": {
+                                        "$ref": "#/components/schemas/Bridge"
+                                    }
+                                },
+                                "required": [
+                                    "fromChainTxHash",
+                                    "fromToken",
+                                    "toToken",
+                                    "fromChain",
+                                    "toChain",
+                                    "fromUserAddress",
+                                    "bridge"
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v0/metrics/stats": {
+            "get": {
+                "summary": "Get Metrics",
+                "tags": [],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": false,
+                                    "properties": {
+                                        "totalBridgeLiquidity": {
+                                            "type": "string",
+                                            "example": "1232425"
+                                        },
+                                        "volume24Hrs": {
+                                            "type": "string",
+                                            "example": "1232425"
+                                        },
+                                        "volume7Days": {
+                                            "type": "string",
+                                            "example": "1232425"
+                                        },
+                                        "volume30Days": {
+                                            "type": "string",
+                                            "example": "1232425"
+                                        },
+                                        "volumeAllTime": {
+                                            "type": "string",
+                                            "example": "1232425"
+                                        },
+                                        "activeUsers30Days": {
+                                            "type": "number",
+                                            "example": 1232425
+                                        },
+                                        "uniqueAddresses": {
+                                            "type": "number",
+                                            "example": 1232425
+                                        },
+                                        "transactions24Hrs": {
+                                            "type": "number",
+                                            "example": 1232425
+                                        },
+                                        "transactions30Days": {
+                                            "type": "number",
+                                            "example": 1232425
+                                        },
+                                        "transactionsAllTime": {
+                                            "type": "number",
+                                            "example": 1232425
+                                        },
+                                        "topBridges": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Anyswap"
+                                                    },
+                                                    "volume": {
+                                                        "type": "string",
+                                                        "example": "12324242"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "historical30DayVolume": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "date": {
+                                                        "type": "string",
+                                                        "example": "July 30"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "12324242"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "historical30DayActiveUsers": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "additionalProperties": false,
+                                                "properties": {
+                                                    "date": {
+                                                        "type": "string",
+                                                        "example": "July 30"
+                                                    },
+                                                    "value": {
+                                                        "type": "string",
+                                                        "example": "12324242"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "required": []
+                                },
+                                "examples": {
+                                    "Example": {}
+                                }
+                            }
+                        }
+                    }
+                },
+                "operationId": "v0.metrics.getMetricsOverview",
+                "description": "Get the metrics overview",
+                "parameters": []
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TokenSymbol": {
+                "type": "string",
+                "examples": [],
+                "title": "TokenSymbol",
+                "enum": [
+                    "ETH",
+                    "MATIC",
+                    "XDAI",
+                    "USDC",
+                    "USDT",
+                    "DAI",
+                    "WBTC",
+                    "sBTC",
+                    "sETH",
+                    "USDC",
+                    "USDT",
+                    "DAI",
+                    "WETH",
+                    "WMATIC",
+                    "WXDAI",
+                    "hETH",
+                    "hMATIC",
+                    "hUSDC",
+                    "hUSDT",
+                    "hDAI",
+                    "AVAX"
+                ]
+            },
+            "ChainSlug": {
+                "type": "string",
+                "title": "ChainSlug",
+                "enum": [
+                    "ethereum",
+                    "arbitrum",
+                    "avalanche",
+                    "boba",
+                    "bsc",
+                    "bsctest",
+                    "celo",
+                    "cronos",
+                    "fantom",
+                    "fuji",
+                    "fuse",
+                    "gnosis",
+                    "harmony",
+                    "heco",
+                    "metis",
+                    "moonbeam",
+                    "moonriver",
+                    "mumbai",
+                    "fuji",
+                    "kovan",
+                    "goerli",
+                    "rinkeby",
+                    "ropsten",
+                    "aurora",
+                    "oec",
+                    "optimism",
+                    "polygon",
+                    "solana",
+                    "terra",
+                    "oasis",
+                    "dfk",
+                    "bttc",
+                    "kcc",
+                    "gather"
+                ],
+                "description": "",
+                "examples": [
+                    "ethereum"
+                ]
+            },
+            "Token": {
+                "type": "object",
+                "title": "Token",
+                "additionalProperties": false,
+                "properties": {
+                    "symbol": {
+                        "type": "string",
+                        "example": "USDT"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Polygon"
+                    },
+                    "address": {
+                        "type": "string",
+                        "example": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"
+                    },
+                    "decimals": {
+                        "type": "number",
+                        "example": 18
+                    },
+                    "chainId": {
+                        "type": "number",
+                        "example": 137
+                    },
+                    "chain": {
+                        "type": "string",
+                        "example": "ethereum"
+                    },
+                    "logoURI": {
+                        "type": "string",
+                        "example": "https://static.debank.com/image/matic_token/logo_url/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/549c4205dbb199f1b8b03af783f35e71.png"
+                    }
+                },
+                "required": [
+                    "symbol",
+                    "name",
+                    "address"
+                ]
+            },
+            "Chain": {
+                "type": "object",
+                "title": "Chain",
+                "examples": [
+                    {
+                        "chainId": 1,
+                        "slug": "ethereum",
+                        "name": "Ethereum"
+                    }
+                ],
+                "additionalProperties": false,
+                "properties": {
+                    "chainId": {
+                        "type": "number",
+                        "example": 137
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Ethereum Mainnet"
+                    },
+                    "slug": {
+                        "$ref": "#/components/schemas/ChainSlug",
+                        "example": "ethereum"
+                    },
+                    "logo": {
+                        "type": "string",
+                        "example": "https://static.debank.com/image/matic_token/logo_url/0x8f3cf7ad23cd3cadbd9735aff958023239c6a063/549c4205dbb199f1b8b03af783f35e71.png"
+                    },
+                    "blockExploreUrls": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "https://etherscan.io/"
+                        }
+                    },
+                    "nativeCurrency": {
+                        "type": "string",
+                        "example": "ETH"
+                    },
+                    "rpcUrls": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "example": "https://eth-mainnet.alchemyapi.io/v2/hrkUnlgn_VD_Kb"
+                        }
+                    },
+                    "tokens": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "properties": {
+                                "symbol": {
+                                    "type": "string",
+                                    "example": "USDT"
+                                },
+                                "decimals": {
+                                    "type": "number",
+                                    "example": 6
+                                },
+                                "address": {
+                                    "type": "string",
+                                    "example": "0x..."
+                                }
+                            }
+                        }
+                    }
+                },
+                "required": [
+                    "chainId",
+                    "slug"
+                ]
+            },
+            "Route": {
+                "type": "object",
+                "title": "Route",
+                "additionalProperties": false,
+                "properties": {
+                    "bridge": {
+                        "$ref": "#/components/schemas/Bridge"
+                    },
+                    "bridgeTokenAddress": {
+                        "type": "string",
+                        "example": "0x1111111254fb6c44bac0bed2854e76f90643097d"
+                    },
+                    "name": {
+                        "$ref": "#/components/schemas/TokenSymbol"
+                    },
+                    "part": {
+                        "type": "number",
+                        "example": 100
+                    },
+                    "bridgeFeeInNativeToken": {
+                        "type": "string"
+                    },
+                    "maxSlippage": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "bridge",
+                    "bridgeTokenAddress",
+                    "name",
+                    "part"
+                ]
+            },
+            "Bridge": {
+                "type": "string",
+                "title": "Bridge",
+                "enum": [
+                    "nxtp",
+                    "hop",
+                    "celer",
+                    "debridge",
+                    "anyswap",
+                    "hyphen",
+                    "nxtp",
+                    "across",
+                    "wormhole",
+                    "synapse",
+                    "stargate"
+                ]
+            },
+            "TransferTx": {
+                "type": "object",
+                "title": "TransferTx",
+                "additionalProperties": false,
+                "properties": {
+                    "from": {
+                        "type": "string",
+                        "example": "0xEC0c6441cAc4EBC8d9CD12dF6FFB19829e9c427A"
+                    },
+                    "to": {
+                        "type": "string",
+                        "example": "0x1111111254fb6c44bac0bed2854e76f90643097d"
+                    },
+                    "data": {
+                        "type": "string",
+                        "example": "0x2e95b6c8...2386f26fc1...d3b668f0adb6fd56...3b6d034026aad2da94c59524ac0d93f6d6cbf9071d7086f2cfee7c08"
+                    },
+                    "value": {
+                        "type": "string",
+                        "example": "10000000000000000"
+                    },
+                    "gas": {
+                        "example": "143340",
+                        "type": "string"
+                    },
+                    "txId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "from",
+                    "to",
+                    "data"
+                ]
+            },
+            "Quote": {
+                "type": "object",
+                "description": "",
+                "x-examples": {
+                    "example-1": {
+                        "destinationTxFee": "4000",
+                        "bridgeFee": "3000",
+                        "duration": "low",
+                        "gas": "4000000000",
+                        "quote": "10000000"
+                    }
+                },
+                "additionalProperties": false,
+                "properties": {
+                    "destinationTxFee": {
+                        "type": "string",
+                        "description": "Fee taken for the destination transfer transaction"
+                    },
+                    "bridgeFee": {
+                        "type": "string",
+                        "description": "Fee taken by the bridge"
+                    },
+                    "duration": {
+                        "type": "string"
+                    },
+                    "gas": {
+                        "type": "string",
+                        "description": "Gas limit for the deposit"
+                    },
+                    "quote": {
+                        "type": "string"
+                    },
+                    "bridgeTokenAddress": {
+                        "type": "string"
+                    },
+                    "decimals": {
+                        "type": "number"
+                    },
+                    "bridgeFeeInNativeToken": {
+                        "type": "string"
+                    },
+                    "maxSlippage": {
+                        "type": "number"
+                    },
+                    "bridgeTokenSymbol": {
+                        "type": "string"
+                    },
+                    "destTokenAddress": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "destinationTxFee",
+                    "bridgeFee",
+                    "duration",
+                    "gas",
+                    "quote",
+                    "bridgeTokenAddress",
+                    "decimals"
+                ]
+            },
+            "TransferStatus": {
+                "type": "string",
+                "title": "TransferStatus",
+                "description": "- `Submitted`: meaning that the token is still on the source chain. The source chain tx is in pending status.\n- `Pending Source Chain`: The tx on source chain is done, but the tx doesn’t appear on the dst chain yet. 2a. In case of token transfer, the bridge router is moving assets from source chain to destination chain. 2b. In case of cross-chain swap, this means either our contract is depositing token to the bridge contract or the bridge contract is finished but bridge router is moving assets from source chain to destination chain.n- `Pending Destination Chain`: The tx appears on the destination chain but it is still running.\n- `Completed`: Token is delivered to use’s wallet on dest chain yet.\n `Refund Required`: Token is stuck on the bridge and required refund. (e.g. In case of Celer, clients need to call /refund endpoint).\n- `Refunded`: Refund is successful. No more action needed.\n- `Failed Source Chain`: Transaction failed on the source chain 1a. In case of the token transfer, this means we cannot invoke the bridge contract. The token will be returned back to user’s wallet on the source chain. 1b. In case of the cross-chain swap, this means our contract fails or we failed to invoke the bridge contract. The token will be returned back to the user’s wallet on the source chain.\n- `Failed Destination Chain`: Transaction failed on the destination chain. 3a. In case of the token transfer, this shouldn't happen. 3b. In case of the cross-chain swap, this means our contract failed to run and the bridge token was sent to the user’s wallet on the destination chain.",
+                "enum": [
+                    "Submitted",
+                    "Pending Source Chain",
+                    "Pending Destination Chain",
+                    "Completed",
+                    "Refund Required",
+                    "Refunded",
+                    "Failed Source Chain",
+                    "Failed Destination Chain"
+                ]
+            }
+        }
+    }
+}
